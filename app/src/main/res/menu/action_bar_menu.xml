@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <item
+        android:id="@+id/menu_search"
+        app:showAsAction="always"
+        android:title="@string/search"
+        android:icon="@drawable/search_icon"/>
+    <item
+        android:id="@+id/menu_favorites"
+        app:showAsAction="always"
+        android:title="@string/favorites"
+        android:icon="@drawable/favorite_icon"/>
+
+</menu>

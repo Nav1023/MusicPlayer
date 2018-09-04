@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <group android:checkableBehavior="single">
+        <item
+            android:id="@+id/nav_theme_color"
+            android:icon="@drawable/theme_color_icon"
+            android:title="@string/theme_color" />
+        <item
+            android:id="@+id/nav_sleep_timer"
+            android:icon="@drawable/timer_icon"
+            android:title="@string/sleep_timer" />
+        <item
+            android:id="@+id/nav_rate"
+            android:icon="@drawable/rate_icon"
+            android:title="@string/rate_app" />
+        <item
+            android:id="@+id/nav_about"
+            android:icon="@drawable/about_icon"
+            android:title="@string/about" />
+    </group>
+</menu>

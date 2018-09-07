@@ -10,6 +10,7 @@ import android.net.Uri;
 import android.os.Handler;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
+import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.Snackbar;
 import android.support.design.widget.TabLayout;
@@ -38,12 +39,13 @@ import com.example.soc_macmini_15.musicplayer.R;
 public class MainActivity extends AppCompatActivity implements View.OnClickListener, TabFragment.createDataParse {
 
     private ImageButton imgBtnPlayPause;
+    private FloatingActionButton refreshSongs;
 
     private TabLayout tabLayout;
     private ViewPager viewPager;
     private SeekBar seekbarController;
 
-    private boolean checkFlag=false;
+    private boolean checkFlag = false;
     private DrawerLayout mDrawerLayout;
     private final int MY_PERMISSION_REQUEST = 100;
 
@@ -62,6 +64,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     private void init() {
+        refreshSongs=findViewById(R.id.btn_refresh);
         seekbarController = findViewById(R.id.seekbar_controller);
         viewPager = findViewById(R.id.songs_viewpager);
         NavigationView navigationView = findViewById(R.id.nav_view);
@@ -79,6 +82,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         actionBar.setDisplayHomeAsUpEnabled(true);
         actionBar.setHomeAsUpIndicator(R.drawable.menu_icon);
 
+        refreshSongs.setOnClickListener(this);
         imgBtnPlayPause.setOnClickListener(this);
         navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
             @Override
@@ -193,7 +197,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.img_btn_play:
-                if(checkFlag) {
+                if (checkFlag) {
                     if (mediaPlayer.isPlaying()) {
                         mediaPlayer.pause();
                         imgBtnPlayPause.setImageResource(R.drawable.play_icon);
@@ -204,7 +208,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
                 }
                 break;
-            case R.id.img_btn_next:
+            case R.id.btn_refresh:
+                Toast.makeText(this, "Refreshing", Toast.LENGTH_SHORT).show();
+                break;
         }
     }
 
@@ -232,7 +238,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         seekbarController.setMax(mediaPlayer.getDuration());
         playCycle();
         mediaPlayer.start();
-        checkFlag=true;
+        checkFlag = true;
         if (mediaPlayer.isPlaying()) {
             imgBtnPlayPause.setImageResource(R.drawable.pause_icon);
         }
@@ -257,12 +263,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         });
     }
 
+
     private void playCycle() {
-        seekbarController.setProgress(mediaPlayer.getCurrentPosition());
         if (mediaPlayer.isPlaying()) {
             runnable = new Runnable() {
                 @Override
                 public void run() {
+                    seekbarController.setProgress(mediaPlayer.getCurrentPosition());
                     playCycle();
 
                 }

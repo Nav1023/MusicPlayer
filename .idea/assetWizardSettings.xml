@@ -35,8 +35,8 @@
                           <map>
                             <entry key="assetSourceType" value="FILE" />
                             <entry key="color" value="ffffff" />
-                            <entry key="outputName" value="pause_icon" />
-                            <entry key="sourceFile" value="$PROJECT_DIR$/../pause-button.svg" />
+                            <entry key="outputName" value="ic_music_player" />
+                            <entry key="sourceFile" value="$PROJECT_DIR$/../music-player.svg" />
                           </map>
                         </option>
                       </PersistentState>

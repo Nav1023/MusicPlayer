@@ -2,14 +2,14 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:gravity="center"
+    android:padding="10dp"
     android:orientation="vertical">
-
-    <TextView
-        android:id="@+id/tv_fragment"
+    <ListView
+        android:id="@+id/list_playlist"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:gravity="center"
-        android:text="Fragment" />
+        android:divider="@color/gray_color"
+        android:dividerHeight="1dp" />
+
 
 </LinearLayout>

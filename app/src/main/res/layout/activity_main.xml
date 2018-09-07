@@ -46,7 +46,7 @@
                 app:tabIndicatorColor="@color/colorPrimary"
                 app:tabMode="fixed"
                 app:tabSelectedTextColor="@color/text_color"
-                app:tabTextColor="@color/gray_color" />
+                app:tabTextColor="@color/off_color" />
         </LinearLayout>
 
 

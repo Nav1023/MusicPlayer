@@ -1,25 +1,42 @@
 package com.example.soc_macmini_15.musicplayer.Activity;
 
+import android.Manifest;
+import android.content.ContentResolver;
 import android.content.DialogInterface;
+import android.content.pm.PackageManager;
+import android.database.Cursor;
+import android.net.Uri;
+import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
+import android.support.design.widget.Snackbar;
 import android.support.design.widget.TabLayout;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.ImageButton;
+import android.widget.ListView;
 import android.widget.TableLayout;
+import android.widget.Toast;
 
 import com.example.soc_macmini_15.musicplayer.Adapter.ViewPagerAdapter;
+import com.example.soc_macmini_15.musicplayer.Helper.SongsManager;
 import com.example.soc_macmini_15.musicplayer.R;
+
+import java.util.ArrayList;
+import java.util.HashMap;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
 
@@ -30,29 +47,57 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     private DrawerLayout mDrawerLayout;
     private boolean countPlayPause = true;
+    private final int MY_PERMISSION_REQUEST = 100;
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         init();
+        grantedPermission();
+
     }
 
-    private void init() {
-        Toolbar toolbar = findViewById(R.id.toolbar);
-        toolbar.setTitleTextColor(getResources().getColor(R.color.text_color));
-        setSupportActionBar(toolbar);
+    private void grantedPermission() {
+        if (ContextCompat.checkSelfPermission(MainActivity.this,
+                Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(MainActivity.this,
+                    new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, MY_PERMISSION_REQUEST);
+            if (ActivityCompat.shouldShowRequestPermissionRationale(MainActivity.this,
+                    Manifest.permission.READ_EXTERNAL_STORAGE)) {
+                ActivityCompat.requestPermissions(MainActivity.this,
+                        new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, MY_PERMISSION_REQUEST);
+            } else {
+                Snackbar snackbar = Snackbar.make(mDrawerLayout, "Provide the StoragePermission", Snackbar.LENGTH_LONG);
+                snackbar.show();
+            }
+        } else {
+              fetchSongs();
+        }
+    }
 
-        ActionBar actionBar = getSupportActionBar();
-        actionBar.setDisplayHomeAsUpEnabled(true);
-        actionBar.setHomeAsUpIndicator(R.drawable.menu_icon);
-
-        mDrawerLayout = findViewById(R.id.drawer_layout);
-        imgBtnPlayPause = findViewById(R.id.img_btn_play);
-        imgBtnPlayPause.setOnClickListener(this);
-
-        viewPager = findViewById(R.id.songs_viewpager);
-        ViewPagerAdapter adapter = new ViewPagerAdapter(getSupportFragmentManager());
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        switch (requestCode){
+            case MY_PERMISSION_REQUEST:
+                if(grantResults.length>0 && grantResults[0]==PackageManager.PERMISSION_GRANTED){
+                        if(ContextCompat.checkSelfPermission(MainActivity.this,
+                                Manifest.permission.READ_EXTERNAL_STORAGE)==PackageManager.PERMISSION_GRANTED){
+                            Toast.makeText(this,"Permission Granted!",Toast.LENGTH_SHORT).show();
+                                fetchSongs();
+                        }
+                        else{
+                            Snackbar snackbar = Snackbar.make(mDrawerLayout, "Provide the StoragePermission", Snackbar.LENGTH_LONG);
+                            snackbar.show();
+                            finish();
+                        }
+                }
+        }
+    }
+    private void fetchSongs(){
+        ViewPagerAdapter adapter = new ViewPagerAdapter(getSupportFragmentManager(),getContentResolver());
         viewPager.setAdapter(adapter);
         viewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
 
@@ -76,7 +121,23 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             }
         });
 
+    }
 
+    private void init() {
+        Toolbar toolbar = findViewById(R.id.toolbar);
+        toolbar.setTitleTextColor(getResources().getColor(R.color.text_color));
+        setSupportActionBar(toolbar);
+
+        ActionBar actionBar = getSupportActionBar();
+        assert actionBar != null;
+        actionBar.setDisplayHomeAsUpEnabled(true);
+        actionBar.setHomeAsUpIndicator(R.drawable.menu_icon);
+
+        mDrawerLayout = findViewById(R.id.drawer_layout);
+        imgBtnPlayPause = findViewById(R.id.img_btn_play);
+        imgBtnPlayPause.setOnClickListener(this);
+
+        viewPager = findViewById(R.id.songs_viewpager);
         NavigationView navigationView = findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
             @Override
@@ -136,7 +197,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     countPlayPause = true;
                 }
         }
-
-
     }
+
 }

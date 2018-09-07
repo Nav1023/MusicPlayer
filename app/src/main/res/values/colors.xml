@@ -7,6 +7,7 @@
     <color name="text_color">#ffffff</color>
     <color name="drawer_color">#335763</color>
     <color name="light_color">#fafafa</color>
-    <color name="gray_color">#dfdada</color>
+    <color name="off_color">#dfdada</color>
+    <color name="gray_color">#9c9b9b</color>
 
 </resources>

@@ -3,6 +3,7 @@
     package="com.example.soc_macmini_15.musicplayer">
 
     <uses-permission android:name="android.permission.WAKE_LOCK" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
 
     <application
         android:allowBackup="true"

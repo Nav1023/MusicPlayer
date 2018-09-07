@@ -43,8 +43,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private ViewPager viewPager;
     private SeekBar seekbarController;
 
+    private boolean checkFlag=false;
     private DrawerLayout mDrawerLayout;
-    private boolean countPlayPause = true;
     private final int MY_PERMISSION_REQUEST = 100;
 
     MediaPlayer mediaPlayer;
@@ -193,17 +193,24 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.img_btn_play:
-                if (countPlayPause) {
-                    imgBtnPlayPause.setImageResource(R.drawable.pause_icon);
-                    countPlayPause = false;
-                } else {
-                    imgBtnPlayPause.setImageResource(R.drawable.play_icon);
-                    countPlayPause = true;
+                if(checkFlag) {
+                    if (mediaPlayer.isPlaying()) {
+                        mediaPlayer.pause();
+                        imgBtnPlayPause.setImageResource(R.drawable.play_icon);
+                    } else if (!mediaPlayer.isPlaying()) {
+                        mediaPlayer.start();
+                        imgBtnPlayPause.setImageResource(R.drawable.pause_icon);
+                    }
+
                 }
+                break;
+            case R.id.img_btn_next:
         }
     }
 
     private void attachMusic(String name, String path) {
+        imgBtnPlayPause.setImageResource(R.drawable.play_icon);
+        setTitle(name);
         mediaPlayer.reset();
         try {
             mediaPlayer.setDataSource(path);
@@ -212,6 +219,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         } catch (Exception e) {
             e.printStackTrace();
         }
+        mediaPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+            @Override
+            public void onCompletion(MediaPlayer mp) {
+                imgBtnPlayPause.setImageResource(R.drawable.play_icon);
+            }
+        });
     }
 
     private void setControls() {
@@ -219,6 +232,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         seekbarController.setMax(mediaPlayer.getDuration());
         playCycle();
         mediaPlayer.start();
+        checkFlag=true;
+        if (mediaPlayer.isPlaying()) {
+            imgBtnPlayPause.setImageResource(R.drawable.pause_icon);
+        }
 
         seekbarController.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override

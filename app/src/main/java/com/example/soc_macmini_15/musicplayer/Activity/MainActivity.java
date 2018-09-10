@@ -219,6 +219,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             case android.R.id.home:
                 mDrawerLayout.openDrawer(Gravity.START);
                 return true;
+            case R.id.menu_search:
+                Toast.makeText(this, "Search", Toast.LENGTH_SHORT).show();
+                return true;
+            case R.id.menu_favorites:
+                Toast.makeText(this, "Added to Favorites", Toast.LENGTH_SHORT).show();
+                return true;
         }
 
         return super.onOptionsItemSelected(item);
@@ -248,6 +254,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 break;
             case R.id.btn_refresh:
                 Toast.makeText(this, "Refreshing", Toast.LENGTH_SHORT).show();
+                setPagerLayout();
                 break;
             case R.id.img_btn_replay:
                 if (repeatFlag) {

@@ -33,12 +33,8 @@ public class TabFragment extends ListFragment {
 
     private static ContentResolver contentResolver1;
     public ArrayList<SongsList> songsList;
-    public ArrayList<String> pathList;
-    public ArrayList<String> nameList;
-
 
     private ListView listView;
-    private SongAdapter adapter;
 
     private createDataParse createDataParse;
     private ContentResolver contentResolver;
@@ -76,12 +72,13 @@ public class TabFragment extends ListFragment {
         setContent();
     }
 
+    /**
+     * Setting the content in the listView and sending the data to the Activity
+     */
     public void setContent() {
         songsList = new ArrayList<>();
-        pathList = new ArrayList<>();
-        nameList = new ArrayList<>();
         getMusic();
-        adapter = new SongAdapter(getContext(), songsList);
+        SongAdapter adapter = new SongAdapter(getContext(), songsList);
         listView.setAdapter(adapter);
 
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -89,8 +86,7 @@ public class TabFragment extends ListFragment {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 // Toast.makeText(getContext(), "You clicked :\n" + songsList.get(position), Toast.LENGTH_SHORT).show();
 
-                createDataParse.onDataPass(nameList.get(position), pathList.get(position));
-
+                createDataParse.onDataPass(songsList.get(position).getTitle(), songsList.get(position).getPath());
             }
         });
     }
@@ -105,12 +101,7 @@ public class TabFragment extends ListFragment {
             int songPath = songCursor.getColumnIndex(MediaStore.Audio.Media.DATA);
 
             do {
-                String currentTitle = songCursor.getString(songTitle);
-                String currentArtist = songCursor.getString(songArtist);
-                String currentLocation = songCursor.getString(songPath);
-                pathList.add(currentLocation);
-                nameList.add(currentTitle);
-                songsList.add(new SongsList(songCursor.getString(songTitle), songCursor.getString(songArtist)));
+                songsList.add(new SongsList(songCursor.getString(songTitle), songCursor.getString(songArtist), songCursor.getString(songPath)));
             } while (songCursor.moveToNext());
         }
     }

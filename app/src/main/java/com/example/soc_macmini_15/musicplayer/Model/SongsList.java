@@ -4,10 +4,21 @@ public class SongsList {
 
     private String title;
     private String subTitle;
+    private String path;
 
-    public SongsList(String title, String subTitle) {
+    public String getPath() {
+        return path;
+    }
+
+    public void setPath(String path) {
+        this.path = path;
+    }
+
+    public SongsList(String title, String subTitle, String path) {
         this.title = title;
         this.subTitle = subTitle;
+        this.path = path;
+
     }
 
     public String getTitle() {

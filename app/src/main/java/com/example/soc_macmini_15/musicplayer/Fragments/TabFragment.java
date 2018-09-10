@@ -85,7 +85,6 @@ public class TabFragment extends ListFragment {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 // Toast.makeText(getContext(), "You clicked :\n" + songsList.get(position), Toast.LENGTH_SHORT).show();
-
                 createDataParse.onDataPass(songsList.get(position).getTitle(), songsList.get(position).getPath());
             }
         });

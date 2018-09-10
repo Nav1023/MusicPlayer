@@ -117,9 +117,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     Manifest.permission.READ_EXTERNAL_STORAGE)) {
                 ActivityCompat.requestPermissions(MainActivity.this,
                         new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, MY_PERMISSION_REQUEST);
-            } else {
-                Snackbar snackbar = Snackbar.make(mDrawerLayout, "Provide the StoragePermission", Snackbar.LENGTH_LONG);
-                snackbar.show();
             }
         } else {
             setPagerLayout();
@@ -127,7 +124,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     /**
-     * Checking if the persmission is granted or not.
+     * Checking if the permission is granted or not
      *
      * @param requestCode
      * @param permissions
@@ -241,7 +238,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                         imgBtnPlayPause.setImageResource(R.drawable.pause_icon);
                         playCycle();
                     }
-
                 }
                 break;
             case R.id.btn_refresh:

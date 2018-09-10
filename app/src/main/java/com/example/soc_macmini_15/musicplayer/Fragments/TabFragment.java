@@ -111,6 +111,7 @@ public class TabFragment extends ListFragment {
             do {
                 songsList.add(new SongsList(songCursor.getString(songTitle), songCursor.getString(songArtist), songCursor.getString(songPath)));
             } while (songCursor.moveToNext());
+            songCursor.close();
         }
     }
 

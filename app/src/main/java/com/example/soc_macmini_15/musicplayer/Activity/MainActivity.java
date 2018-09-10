@@ -31,17 +31,23 @@ import android.widget.Toast;
 
 import com.example.soc_macmini_15.musicplayer.Adapter.ViewPagerAdapter;
 import com.example.soc_macmini_15.musicplayer.Fragments.TabFragment;
+import com.example.soc_macmini_15.musicplayer.Model.SongsList;
 import com.example.soc_macmini_15.musicplayer.R;
+
+import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener, TabFragment.createDataParse {
 
-    private ImageButton imgBtnPlayPause, imgReplay;
+    private ImageButton imgBtnPlayPause, imgbtnReplay, imgBtnPrev, imgBtnNext;
     private TabLayout tabLayout;
     private ViewPager viewPager;
     private SeekBar seekbarController;
     private DrawerLayout mDrawerLayout;
     private TextView tvCurrentTime, tvTotalTime;
 
+
+    private ArrayList<SongsList> songList;
+    private int currentPosition;
 
     private boolean checkFlag = false, repeatFlag = false;
     private final int MY_PERMISSION_REQUEST = 100;
@@ -65,7 +71,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
      */
 
     private void init() {
-        imgReplay = findViewById(R.id.img_btn_replay);
+        imgBtnPrev = findViewById(R.id.img_btn_previous);
+        imgBtnNext = findViewById(R.id.img_btn_next);
+        imgbtnReplay = findViewById(R.id.img_btn_replay);
         tvCurrentTime = findViewById(R.id.tv_current_time);
         tvTotalTime = findViewById(R.id.tv_total_time);
         FloatingActionButton refreshSongs = findViewById(R.id.btn_refresh);
@@ -86,9 +94,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         actionBar.setDisplayHomeAsUpEnabled(true);
         actionBar.setHomeAsUpIndicator(R.drawable.menu_icon);
 
-        imgReplay.setOnClickListener(this);
+        imgBtnNext.setOnClickListener(this);
+        imgBtnPrev.setOnClickListener(this);
+        imgbtnReplay.setOnClickListener(this);
         refreshSongs.setOnClickListener(this);
         imgBtnPlayPause.setOnClickListener(this);
+
         navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
@@ -261,6 +272,22 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     repeatFlag = true;
                 }
                 break;
+            case R.id.img_btn_previous:
+                if (currentPosition - 1 > -1) {
+                    attachMusic(songList.get(currentPosition - 1).getTitle(), songList.get(currentPosition - 1).getPath());
+                    currentPosition = currentPosition - 1;
+                } else {
+                    imgBtnPrev.setEnabled(false);
+                }
+                break;
+            case R.id.img_btn_next:
+                if (currentPosition + 1 < songList.size()) {
+                    attachMusic(songList.get(currentPosition + 1).getTitle(), songList.get(currentPosition + 1).getPath());
+                    currentPosition += 1;
+                } else {
+                    imgBtnNext.setEnabled(false);
+                }
+                break;
         }
     }
 
@@ -381,6 +408,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         Toast.makeText(this, name, Toast.LENGTH_LONG).show();
         attachMusic(name, path);
     }
+
+    @Override
+    public void fullSongList(ArrayList<SongsList> songList, int position) {
+        this.songList = songList;
+        this.currentPosition = position;
+    }
+
 
     @Override
     protected void onResume() {

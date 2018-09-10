@@ -22,6 +22,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.soc_macmini_15.musicplayer.Activity.MainActivity;
+import com.example.soc_macmini_15.musicplayer.Adapter.SongAdapter;
+import com.example.soc_macmini_15.musicplayer.Model.SongsList;
 import com.example.soc_macmini_15.musicplayer.R;
 
 import java.util.ArrayList;
@@ -30,13 +32,13 @@ public class TabFragment extends ListFragment {
 
 
     private static ContentResolver contentResolver1;
-    public ArrayList<String> songsList;
+    public ArrayList<SongsList> songsList;
     public ArrayList<String> pathList;
     public ArrayList<String> nameList;
 
 
     private ListView listView;
-    private ArrayAdapter<String> adapter;
+    private SongAdapter adapter;
 
     private createDataParse createDataParse;
     private ContentResolver contentResolver;
@@ -79,7 +81,7 @@ public class TabFragment extends ListFragment {
         pathList = new ArrayList<>();
         nameList = new ArrayList<>();
         getMusic();
-        adapter = new ArrayAdapter<String>(getContext(), android.R.layout.simple_list_item_1, songsList);
+        adapter = new SongAdapter(getContext(), songsList);
         listView.setAdapter(adapter);
 
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -108,7 +110,7 @@ public class TabFragment extends ListFragment {
                 String currentLocation = songCursor.getString(songPath);
                 pathList.add(currentLocation);
                 nameList.add(currentTitle);
-                songsList.add(currentTitle + "\n" + currentArtist);
+                songsList.add(new SongsList(songCursor.getString(songTitle), songCursor.getString(songArtist)));
             } while (songCursor.moveToNext());
         }
     }

@@ -42,7 +42,7 @@ import java.util.concurrent.TimeUnit;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener, TabFragment.createDataParse {
 
-    private ImageButton imgBtnPlayPause;
+    private ImageButton imgBtnPlayPause, imgReplay;
     private FloatingActionButton refreshSongs;
     private TabLayout tabLayout;
     private ViewPager viewPager;
@@ -51,7 +51,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private TextView tvCurrentTime, tvTotalTime;
 
 
-    private boolean checkFlag = false;
+    private boolean checkFlag = false, repeatFlag = false;
     private final int MY_PERMISSION_REQUEST = 100;
 
     MediaPlayer mediaPlayer;
@@ -69,10 +69,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     /**
-     *  Initialising the views
+     * Initialising the views
      */
 
     private void init() {
+        imgReplay = findViewById(R.id.img_btn_replay);
         tvCurrentTime = findViewById(R.id.tv_current_time);
         tvTotalTime = findViewById(R.id.tv_total_time);
         refreshSongs = findViewById(R.id.btn_refresh);
@@ -93,6 +94,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         actionBar.setDisplayHomeAsUpEnabled(true);
         actionBar.setHomeAsUpIndicator(R.drawable.menu_icon);
 
+        imgReplay.setOnClickListener(this);
         refreshSongs.setOnClickListener(this);
         imgBtnPlayPause.setOnClickListener(this);
         navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
@@ -111,7 +113,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     /**
-     *  Function to ask user to grant the permission.
+     * Function to ask user to grant the permission.
      */
 
     private void grantedPermission() {
@@ -247,6 +249,17 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             case R.id.btn_refresh:
                 Toast.makeText(this, "Refreshing", Toast.LENGTH_SHORT).show();
                 break;
+            case R.id.img_btn_replay:
+                if (repeatFlag) {
+                    Toast.makeText(this, "Looping Removed..", Toast.LENGTH_SHORT).show();
+                    mediaPlayer.setLooping(false);
+                    repeatFlag = false;
+                } else {
+                    Toast.makeText(this, "Looping Added..", Toast.LENGTH_SHORT).show();
+                    mediaPlayer.setLooping(true);
+                    repeatFlag = true;
+                }
+                break;
         }
     }
 
@@ -287,8 +300,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         checkFlag = true;
         if (mediaPlayer.isPlaying()) {
             imgBtnPlayPause.setImageResource(R.drawable.pause_icon);
-            tvTotalTime.setText(String.format(Locale.ENGLISH, "%d:%d", TimeUnit.MILLISECONDS.toMinutes((long) mediaPlayer.getDuration()),
-                    TimeUnit.MILLISECONDS.toSeconds((long) mediaPlayer.getDuration()) % 60));
+            tvTotalTime.setText(getTimeFormatted(mediaPlayer.getDuration()));
         }
 
         seekbarController.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
@@ -316,8 +328,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
      */
     private void playCycle() {
         seekbarController.setProgress(mediaPlayer.getCurrentPosition());
-        tvCurrentTime.setText(String.format(Locale.ENGLISH, "%d:%d", TimeUnit.MILLISECONDS.toMinutes((long) mediaPlayer.getCurrentPosition()),
-                TimeUnit.MILLISECONDS.toSeconds((long) mediaPlayer.getCurrentPosition()) % 60));
+        tvCurrentTime.setText(getTimeFormatted(mediaPlayer.getCurrentPosition()));
         if (mediaPlayer.isPlaying()) {
             runnable = new Runnable() {
                 @Override
@@ -329,6 +340,32 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             handler.postDelayed(runnable, 100);
         }
     }
+
+    private String getTimeFormatted(long milliSeconds) {
+        String finalTimerString = "";
+        String secondsString = "";
+
+        //Converting total duration into time
+        int hours = (int) (milliSeconds / 3600000);
+        int minutes = (int) (milliSeconds % 3600000) / 60000;
+        int seconds = (int) ((milliSeconds % 3600000) % 60000 / 1000);
+
+        // Adding hours if any
+        if (hours > 0)
+            finalTimerString = hours + ":";
+
+        // Prepending 0 to seconds if it is one digit
+        if (seconds < 10)
+            secondsString = "0" + seconds;
+        else
+            secondsString = "" + seconds;
+
+        finalTimerString = finalTimerString + minutes + ":" + secondsString;
+
+        // Return timer String;
+        return finalTimerString;
+    }
+
 
     /**
      * Function Overrided to receive the data from the fragment

@@ -89,6 +89,14 @@ public class TabFragment extends ListFragment {
                 createDataParse.onDataPass(songsList.get(position).getTitle(), songsList.get(position).getPath());
             }
         });
+
+        listView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+            @Override
+            public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+                Toast.makeText(getContext(), "Remove Items", Toast.LENGTH_SHORT).show();
+                return true;
+            }
+        });
     }
 
 

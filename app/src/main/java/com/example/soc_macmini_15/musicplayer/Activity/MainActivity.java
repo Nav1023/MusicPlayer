@@ -1,14 +1,10 @@
 package com.example.soc_macmini_15.musicplayer.Activity;
 
 import android.Manifest;
-import android.content.ContentResolver;
 import android.content.DialogInterface;
 import android.content.pm.PackageManager;
-import android.database.Cursor;
 import android.media.MediaPlayer;
-import android.net.Uri;
 import android.os.Handler;
-import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
@@ -37,13 +33,9 @@ import com.example.soc_macmini_15.musicplayer.Adapter.ViewPagerAdapter;
 import com.example.soc_macmini_15.musicplayer.Fragments.TabFragment;
 import com.example.soc_macmini_15.musicplayer.R;
 
-import java.util.Locale;
-import java.util.concurrent.TimeUnit;
-
 public class MainActivity extends AppCompatActivity implements View.OnClickListener, TabFragment.createDataParse {
 
     private ImageButton imgBtnPlayPause, imgReplay;
-    private FloatingActionButton refreshSongs;
     private TabLayout tabLayout;
     private ViewPager viewPager;
     private SeekBar seekbarController;
@@ -76,7 +68,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         imgReplay = findViewById(R.id.img_btn_replay);
         tvCurrentTime = findViewById(R.id.tv_current_time);
         tvTotalTime = findViewById(R.id.tv_total_time);
-        refreshSongs = findViewById(R.id.btn_refresh);
+        FloatingActionButton refreshSongs = findViewById(R.id.btn_refresh);
         seekbarController = findViewById(R.id.seekbar_controller);
         viewPager = findViewById(R.id.songs_viewpager);
         NavigationView navigationView = findViewById(R.id.nav_view);
@@ -351,7 +343,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     private String getTimeFormatted(long milliSeconds) {
         String finalTimerString = "";
-        String secondsString = "";
+        String secondsString;
 
         //Converting total duration into time
         int hours = (int) (milliSeconds / 3600000);

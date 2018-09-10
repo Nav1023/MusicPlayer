@@ -277,7 +277,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     attachMusic(songList.get(currentPosition - 1).getTitle(), songList.get(currentPosition - 1).getPath());
                     currentPosition = currentPosition - 1;
                 } else {
-                    imgBtnPrev.setEnabled(false);
+                    attachMusic(songList.get(currentPosition).getTitle(), songList.get(currentPosition).getPath());
                 }
                 break;
             case R.id.img_btn_next:
@@ -285,7 +285,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     attachMusic(songList.get(currentPosition + 1).getTitle(), songList.get(currentPosition + 1).getPath());
                     currentPosition += 1;
                 } else {
-                    imgBtnNext.setEnabled(false);
+                    Toast.makeText(this, "Playlist Ended", Toast.LENGTH_SHORT).show();
                 }
                 break;
         }

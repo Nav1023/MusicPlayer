@@ -30,23 +30,28 @@ import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.SeekBar;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.soc_macmini_15.musicplayer.Adapter.ViewPagerAdapter;
 import com.example.soc_macmini_15.musicplayer.Fragments.TabFragment;
 import com.example.soc_macmini_15.musicplayer.R;
 
+import java.util.Locale;
+import java.util.concurrent.TimeUnit;
+
 public class MainActivity extends AppCompatActivity implements View.OnClickListener, TabFragment.createDataParse {
 
     private ImageButton imgBtnPlayPause;
     private FloatingActionButton refreshSongs;
-
     private TabLayout tabLayout;
     private ViewPager viewPager;
     private SeekBar seekbarController;
+    private DrawerLayout mDrawerLayout;
+    private TextView tvCurrentTime, tvTotalTime;
+
 
     private boolean checkFlag = false;
-    private DrawerLayout mDrawerLayout;
     private final int MY_PERMISSION_REQUEST = 100;
 
     MediaPlayer mediaPlayer;
@@ -63,8 +68,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     }
 
+    /**
+     *  Initialising the views
+     */
+
     private void init() {
-        refreshSongs=findViewById(R.id.btn_refresh);
+        tvCurrentTime = findViewById(R.id.tv_current_time);
+        tvTotalTime = findViewById(R.id.tv_total_time);
+        refreshSongs = findViewById(R.id.btn_refresh);
         seekbarController = findViewById(R.id.seekbar_controller);
         viewPager = findViewById(R.id.songs_viewpager);
         NavigationView navigationView = findViewById(R.id.nav_view);
@@ -99,6 +110,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         });
     }
 
+    /**
+     *  Function to ask user to grant the permission.
+     */
+
     private void grantedPermission() {
         if (ContextCompat.checkSelfPermission(MainActivity.this,
                 Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
@@ -113,10 +128,17 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 snackbar.show();
             }
         } else {
-            fetchSongs();
+            setPagerLayout();
         }
     }
 
+    /**
+     * Checking if the persmission is granted or not.
+     *
+     * @param requestCode
+     * @param permissions
+     * @param grantResults
+     */
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         switch (requestCode) {
@@ -125,7 +147,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     if (ContextCompat.checkSelfPermission(MainActivity.this,
                             Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
                         Toast.makeText(this, "Permission Granted!", Toast.LENGTH_SHORT).show();
-                        fetchSongs();
+                        setPagerLayout();
                     } else {
                         Snackbar snackbar = Snackbar.make(mDrawerLayout, "Provide the StoragePermission", Snackbar.LENGTH_LONG);
                         snackbar.show();
@@ -135,7 +157,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }
     }
 
-    private void fetchSongs() {
+    /**
+     * Setting up the tab layout with the viewpager in it.
+     */
+
+    private void setPagerLayout() {
         ViewPagerAdapter adapter = new ViewPagerAdapter(getSupportFragmentManager(), getContentResolver());
         viewPager.setAdapter(adapter);
         viewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
@@ -162,6 +188,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     }
 
+    /**
+     * Function to show the dialog for about us.
+     */
     private void about() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle(getString(R.string.about))
@@ -193,6 +222,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         return super.onOptionsItemSelected(item);
     }
 
+
+    /**
+     * Function to handle the click events.
+     *
+     * @param v
+     */
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
@@ -204,6 +239,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     } else if (!mediaPlayer.isPlaying()) {
                         mediaPlayer.start();
                         imgBtnPlayPause.setImageResource(R.drawable.pause_icon);
+                        playCycle();
                     }
 
                 }
@@ -213,6 +249,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 break;
         }
     }
+
+    /**
+     * Function to attach the song to the music player
+     *
+     * @param name
+     * @param path
+     */
 
     private void attachMusic(String name, String path) {
         imgBtnPlayPause.setImageResource(R.drawable.play_icon);
@@ -233,14 +276,19 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         });
     }
 
-    private void setControls() {
+    /**
+     * Function to set the controls according to the song
+     */
 
+    private void setControls() {
         seekbarController.setMax(mediaPlayer.getDuration());
-        playCycle();
         mediaPlayer.start();
+        playCycle();
         checkFlag = true;
         if (mediaPlayer.isPlaying()) {
             imgBtnPlayPause.setImageResource(R.drawable.pause_icon);
+            tvTotalTime.setText(String.format(Locale.ENGLISH, "%d:%d", TimeUnit.MILLISECONDS.toMinutes((long) mediaPlayer.getDuration()),
+                    TimeUnit.MILLISECONDS.toSeconds((long) mediaPlayer.getDuration()) % 60));
         }
 
         seekbarController.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
@@ -263,13 +311,17 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         });
     }
 
-
+    /**
+     * Function to play the song using a thread
+     */
     private void playCycle() {
+        seekbarController.setProgress(mediaPlayer.getCurrentPosition());
+        tvCurrentTime.setText(String.format(Locale.ENGLISH, "%d:%d", TimeUnit.MILLISECONDS.toMinutes((long) mediaPlayer.getCurrentPosition()),
+                TimeUnit.MILLISECONDS.toSeconds((long) mediaPlayer.getCurrentPosition()) % 60));
         if (mediaPlayer.isPlaying()) {
             runnable = new Runnable() {
                 @Override
                 public void run() {
-                    seekbarController.setProgress(mediaPlayer.getCurrentPosition());
                     playCycle();
 
                 }
@@ -277,6 +329,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             handler.postDelayed(runnable, 100);
         }
     }
+
+    /**
+     * Function Overrided to receive the data from the fragment
+     *
+     * @param name
+     * @param path
+     */
 
     @Override
     public void onDataPass(String name, String path) {

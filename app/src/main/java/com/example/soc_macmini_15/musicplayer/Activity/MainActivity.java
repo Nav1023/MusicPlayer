@@ -308,6 +308,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
                 if (fromUser) {
                     mediaPlayer.seekTo(progress);
+                    tvCurrentTime.setText(getTimeFormatted(progress));
                 }
             }
 

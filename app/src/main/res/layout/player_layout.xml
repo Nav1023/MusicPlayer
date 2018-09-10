@@ -10,13 +10,14 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
-        android:gravity="center"
+        android:gravity="center_horizontal"
         android:orientation="horizontal">
 
         <ImageButton
             android:id="@+id/img_btn_replay"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
             android:backgroundTint="@color/colorPrimary"
             android:src="@drawable/undo_icon" />
 

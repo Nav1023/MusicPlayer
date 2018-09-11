@@ -258,6 +258,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                         imgBtnPlayPause.setImageResource(R.drawable.pause_icon);
                         playCycle();
                     }
+                } else {
+                    Toast.makeText(this, "Select the Song ..", Toast.LENGTH_SHORT).show();
                 }
                 break;
             case R.id.btn_refresh:
@@ -265,30 +267,43 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 setPagerLayout();
                 break;
             case R.id.img_btn_replay:
+
                 if (repeatFlag) {
-                    Toast.makeText(this, "Looping Removed..", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(this, "Replaying Removed..", Toast.LENGTH_SHORT).show();
                     mediaPlayer.setLooping(false);
                     repeatFlag = false;
                 } else {
-                    Toast.makeText(this, "Looping Added..", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(this, "Replaying Added..", Toast.LENGTH_SHORT).show();
                     mediaPlayer.setLooping(true);
                     repeatFlag = true;
                 }
                 break;
             case R.id.img_btn_previous:
-                if (currentPosition - 1 > -1) {
-                    attachMusic(songList.get(currentPosition - 1).getTitle(), songList.get(currentPosition - 1).getPath());
-                    currentPosition = currentPosition - 1;
+                if (checkFlag) {
+                    if (mediaPlayer.getCurrentPosition()>10) {
+                        if (currentPosition - 1 > -1) {
+                            attachMusic(songList.get(currentPosition - 1).getTitle(), songList.get(currentPosition - 1).getPath());
+                            currentPosition = currentPosition - 1;
+                        } else {
+                            attachMusic(songList.get(currentPosition).getTitle(), songList.get(currentPosition).getPath());
+                        }
+                    } else {
+                        attachMusic(songList.get(currentPosition).getTitle(), songList.get(currentPosition).getPath());
+                    }
                 } else {
-                    attachMusic(songList.get(currentPosition).getTitle(), songList.get(currentPosition).getPath());
+                    Toast.makeText(this, "Select a Song . .", Toast.LENGTH_SHORT).show();
                 }
                 break;
             case R.id.img_btn_next:
-                if (currentPosition + 1 < songList.size()) {
-                    attachMusic(songList.get(currentPosition + 1).getTitle(), songList.get(currentPosition + 1).getPath());
-                    currentPosition += 1;
+                if (checkFlag) {
+                    if (currentPosition + 1 < songList.size()) {
+                        attachMusic(songList.get(currentPosition + 1).getTitle(), songList.get(currentPosition + 1).getPath());
+                        currentPosition += 1;
+                    } else {
+                        Toast.makeText(this, "Playlist Ended", Toast.LENGTH_SHORT).show();
+                    }
                 } else {
-                    Toast.makeText(this, "Playlist Ended", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(this, "Select the Song ..", Toast.LENGTH_SHORT).show();
                 }
                 break;
             case R.id.img_btn_setting:

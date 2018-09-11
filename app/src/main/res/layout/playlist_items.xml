@@ -20,7 +20,7 @@
         android:layout_toEndOf="@id/iv_music_list"
         android:singleLine="true"
         android:text="Title"
-        android:textColor="@color/colorAccent"
+        android:textColor="@color/color_black"
         android:textSize="16sp"
         android:textStyle="bold" />
 

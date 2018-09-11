@@ -49,7 +49,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private ArrayList<SongsList> songList;
     private int currentPosition;
 
-    private boolean checkFlag = false, repeatFlag = false, playContinueFlag = false;
+    private boolean checkFlag = false, repeatFlag = false, playContinueFlag = false, favFlag = true;
     private final int MY_PERMISSION_REQUEST = 100;
 
     MediaPlayer mediaPlayer;
@@ -232,11 +232,22 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 Toast.makeText(this, "Search", Toast.LENGTH_SHORT).show();
                 return true;
             case R.id.menu_favorites:
-                Toast.makeText(this, "Added to Favorites", Toast.LENGTH_SHORT).show();
+                if (favFlag) {
+                    Toast.makeText(this, "Added to Favorites", Toast.LENGTH_SHORT).show();
+                    item.setIcon(R.drawable.ic_favorite_filled);
+                    favFlag = false;
+                } else {
+                    Toast.makeText(this, "Removed to from", Toast.LENGTH_SHORT).show();
+                    item.setIcon(R.drawable.favorite_icon);
+                    favFlag = true;
+                }
                 return true;
         }
 
-        return super.onOptionsItemSelected(item);
+        return super.
+
+                onOptionsItemSelected(item);
+
     }
 
 
@@ -280,7 +291,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 break;
             case R.id.img_btn_previous:
                 if (checkFlag) {
-                    if (mediaPlayer.getCurrentPosition()>10) {
+                    if (mediaPlayer.getCurrentPosition() > 10) {
                         if (currentPosition - 1 > -1) {
                             attachMusic(songList.get(currentPosition - 1).getTitle(), songList.get(currentPosition - 1).getPath());
                             currentPosition = currentPosition - 1;

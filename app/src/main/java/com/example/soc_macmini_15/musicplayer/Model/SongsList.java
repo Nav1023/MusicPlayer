@@ -33,7 +33,4 @@ public class SongsList {
         return subTitle;
     }
 
-    public void setSubTitle(String subTitle) {
-        this.subTitle = subTitle;
-    }
 }

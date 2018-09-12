@@ -3,7 +3,6 @@ package com.example.soc_macmini_15.musicplayer.Fragments;
 
 import android.content.ContentResolver;
 import android.content.Context;
-import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
@@ -16,22 +15,21 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.ListView;
-import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.soc_macmini_15.musicplayer.Activity.MainActivity;
 import com.example.soc_macmini_15.musicplayer.Adapter.SongAdapter;
 import com.example.soc_macmini_15.musicplayer.Model.SongsList;
 import com.example.soc_macmini_15.musicplayer.R;
 
 import java.util.ArrayList;
 
-public class TabFragment extends ListFragment {
+public class AllSongFragment extends ListFragment {
 
 
     private static ContentResolver contentResolver1;
+    private static int currentPos;
+
     public ArrayList<SongsList> songsList;
 
     private ListView listView;
@@ -42,7 +40,7 @@ public class TabFragment extends ListFragment {
     public static Fragment getInstance(int position, ContentResolver mcontentResolver) {
         Bundle bundle = new Bundle();
         bundle.putInt("pos", position);
-        TabFragment tabFragment = new TabFragment();
+        AllSongFragment tabFragment = new AllSongFragment();
         tabFragment.setArguments(bundle);
         contentResolver1 = mcontentResolver;
         return tabFragment;

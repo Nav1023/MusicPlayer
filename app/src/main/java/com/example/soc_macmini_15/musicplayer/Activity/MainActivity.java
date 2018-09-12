@@ -30,13 +30,15 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.soc_macmini_15.musicplayer.Adapter.ViewPagerAdapter;
-import com.example.soc_macmini_15.musicplayer.Fragments.TabFragment;
+import com.example.soc_macmini_15.musicplayer.DB.FavoritesOperations;
+import com.example.soc_macmini_15.musicplayer.Fragments.AllSongFragment;
+import com.example.soc_macmini_15.musicplayer.Fragments.FavSongFragment;
 import com.example.soc_macmini_15.musicplayer.Model.SongsList;
 import com.example.soc_macmini_15.musicplayer.R;
 
 import java.util.ArrayList;
 
-public class MainActivity extends AppCompatActivity implements View.OnClickListener, TabFragment.createDataParse {
+public class MainActivity extends AppCompatActivity implements View.OnClickListener, AllSongFragment.createDataParse, FavSongFragment.createDataParsed {
 
     private ImageButton imgBtnPlayPause, imgbtnReplay, imgBtnPrev, imgBtnNext, imgBtnSetting;
     private TabLayout tabLayout;
@@ -175,7 +177,22 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private void setPagerLayout() {
         ViewPagerAdapter adapter = new ViewPagerAdapter(getSupportFragmentManager(), getContentResolver());
         viewPager.setAdapter(adapter);
-        viewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
+        viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            @Override
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+
+            }
+
+            @Override
+            public void onPageSelected(int position) {
+
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int state) {
+
+            }
+        });
 
         tabLayout = findViewById(R.id.tabs);
         tabLayout.setTabGravity(TabLayout.GRAVITY_FILL);
@@ -232,14 +249,19 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 Toast.makeText(this, "Search", Toast.LENGTH_SHORT).show();
                 return true;
             case R.id.menu_favorites:
-                if (favFlag) {
-                    Toast.makeText(this, "Added to Favorites", Toast.LENGTH_SHORT).show();
-                    item.setIcon(R.drawable.ic_favorite_filled);
-                    favFlag = false;
-                } else {
-                    Toast.makeText(this, "Removed to from", Toast.LENGTH_SHORT).show();
-                    item.setIcon(R.drawable.favorite_icon);
-                    favFlag = true;
+                if (mediaPlayer != null) {
+                    if (favFlag) {
+                        Toast.makeText(this, "Added to Favorites", Toast.LENGTH_SHORT).show();
+                        item.setIcon(R.drawable.ic_favorite_filled);
+                        SongsList favList = new SongsList(songList.get(currentPosition).getTitle(), songList.get(currentPosition).getSubTitle(), songList.get(currentPosition).getPath());
+                        FavoritesOperations favoritesOperations = new FavoritesOperations(this);
+                        favoritesOperations.addSongFav(favList);
+                        favFlag = false;
+                    } else {
+                        Toast.makeText(this, "Removed to from", Toast.LENGTH_SHORT).show();
+                        item.setIcon(R.drawable.favorite_icon);
+                        favFlag = true;
+                    }
                 }
                 return true;
         }

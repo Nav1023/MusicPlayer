@@ -253,7 +253,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     if (favFlag) {
                         Toast.makeText(this, "Added to Favorites", Toast.LENGTH_SHORT).show();
                         item.setIcon(R.drawable.ic_favorite_filled);
-                        SongsList favList = new SongsList(songList.get(currentPosition).getTitle(), songList.get(currentPosition).getSubTitle(), songList.get(currentPosition).getPath());
+                        SongsList favList = new SongsList(songList.get(currentPosition).getTitle(),
+                                songList.get(currentPosition).getSubTitle(), songList.get(currentPosition).getPath());
                         FavoritesOperations favoritesOperations = new FavoritesOperations(this);
                         favoritesOperations.addSongFav(favList);
                         favFlag = false;

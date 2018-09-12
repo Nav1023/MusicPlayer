@@ -46,7 +46,8 @@ public class FavoritesOperations {
         values.put(FavoritesDBHandler.COLUMN_SUBTITLE, songsList.getSubTitle());
         values.put(FavoritesDBHandler.COLUMN_PATH, songsList.getPath());
 
-        database.insert(FavoritesDBHandler.TABLE_SONGS, null, values);
+        database.insertWithOnConflict(FavoritesDBHandler.TABLE_SONGS, null, values, SQLiteDatabase.CONFLICT_REPLACE);
+
         close();
     }
 
@@ -67,10 +68,13 @@ public class FavoritesOperations {
         return favSongs;
     }
 
-    public void removeSong(SongsList songsList) {
+    public void removeSong(String songPath) {
         open();
-        database.delete(FavoritesDBHandler.TABLE_SONGS,
-                FavoritesDBHandler.COLUMN_PATH + "=" + songsList.getPath(), null);
+        String whereClause =
+                FavoritesDBHandler.COLUMN_PATH + "=?";
+        String[] whereArgs = new String[]{songPath};
+
+        database.delete(FavoritesDBHandler.TABLE_SONGS, whereClause, whereArgs);
         close();
     }
 

@@ -16,8 +16,8 @@ public class FavoritesDBHandler extends SQLiteOpenHelper {
     public static final String COLUMN_PATH           = "songpath";
 
     private static final String TABLE_CREATE = "CREATE TABLE " + TABLE_SONGS + " (" + COLUMN_ID
-            + " INTEGER PRIMARY KEY AUTOINCREMENT, " + COLUMN_TITLE + " TEXT, " + COLUMN_SUBTITLE
-            + " TEXT, " + COLUMN_PATH + " TEXT " + ")";
+            + " INTEGER, " + COLUMN_TITLE + " TEXT, " + COLUMN_SUBTITLE
+            + " TEXT, " + COLUMN_PATH + " TEXT PRIMARY KEY " + ")";
 
     public FavoritesDBHandler(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);

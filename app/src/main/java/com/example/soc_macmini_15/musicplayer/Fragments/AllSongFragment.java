@@ -4,6 +4,7 @@ package com.example.soc_macmini_15.musicplayer.Fragments;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.database.Cursor;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
@@ -91,7 +92,6 @@ public class AllSongFragment extends ListFragment {
         listView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
             @Override
             public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
-                Toast.makeText(getContext(), "Remove Items", Toast.LENGTH_SHORT).show();
                 return true;
             }
         });

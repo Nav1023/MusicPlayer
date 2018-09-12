@@ -31,21 +31,18 @@ public class FavSongFragment extends ListFragment {
 
     private FavoritesOperations favoritesOperations;
 
-    private static ContentResolver contentResolver1;
 
     public ArrayList<SongsList> songsList;
 
     private ListView listView;
 
     private createDataParsed createDataParsed;
-    private ContentResolver contentResolver;
 
-    public static Fragment getInstance(int position, ContentResolver mcontentResolver) {
+    public static Fragment getInstance(int position) {
         Bundle bundle = new Bundle();
         bundle.putInt("pos", position);
         FavSongFragment tabFragment = new FavSongFragment();
         tabFragment.setArguments(bundle);
-        contentResolver1 = mcontentResolver;
         return tabFragment;
     }
 
@@ -70,7 +67,6 @@ public class FavSongFragment extends ListFragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         listView = view.findViewById(R.id.list_playlist);
-        contentResolver = contentResolver1;
         setContent();
     }
 
@@ -91,22 +87,31 @@ public class FavSongFragment extends ListFragment {
                 createDataParsed.fullSongList(songsList, position);
             }
         });
-
         listView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
             @Override
             public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
-                showDialog(songsList.get(position).getPath());
+                deleteOption(position);
                 return true;
             }
         });
+    }
+
+    private void deleteOption(int position) {
+        if (position != createDataParsed.getPosition())
+            showDialog(songsList.get(position).getPath(), position);
+        else
+            Toast.makeText(getContext(), "You Can't delete the Current Song", Toast.LENGTH_SHORT).show();
     }
 
     public interface createDataParsed {
         public void onDataPass(String name, String path);
 
         public void fullSongList(ArrayList<SongsList> songList, int position);
+
+        public int getPosition();
     }
-    private void showDialog(final String index){
+
+    private void showDialog(final String index, final int position) {
         AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
         builder.setTitle(getString(R.string.delete))
                 .setMessage(getString(R.string.delete_text))
@@ -121,6 +126,8 @@ public class FavSongFragment extends ListFragment {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         favoritesOperations.removeSong(index);
+                        createDataParsed.fullSongList(songsList, position);
+                        setContent();
                     }
                 });
         AlertDialog alertDialog = builder.create();

@@ -25,7 +25,7 @@ public class ViewPagerAdapter extends FragmentPagerAdapter {
             case 0:
                 return AllSongFragment.getInstance(position, contentResolver);
             case 1:
-                return FavSongFragment.getInstance(position, contentResolver);
+                return FavSongFragment.getInstance(position);
             default:
                 return null;
         }

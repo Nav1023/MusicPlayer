@@ -33,6 +33,7 @@ public class FavSongFragment extends ListFragment {
 
 
     public ArrayList<SongsList> songsList;
+    public ArrayList<SongsList> newList;
 
     private ListView listView;
 
@@ -74,17 +75,33 @@ public class FavSongFragment extends ListFragment {
      * Setting the content in the listView and sending the data to the Activity
      */
     public void setContent() {
+        boolean searchedList = false;
         songsList = new ArrayList<>();
+        newList = new ArrayList<>();
         songsList = favoritesOperations.getAllFavorites();
         SongAdapter adapter = new SongAdapter(getContext(), songsList);
+        if (!createDataParsed.queryText().equals("")) {
+            adapter = onQueryTextChange();
+            adapter.notifyDataSetChanged();
+            searchedList = true;
+        } else {
+            searchedList = false;
+        }
+
         listView.setAdapter(adapter);
 
+        final boolean finalSearchedList = searchedList;
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 // Toast.makeText(getContext(), "You clicked :\n" + songsList.get(position), Toast.LENGTH_SHORT).show();
-                createDataParsed.onDataPass(songsList.get(position).getTitle(), songsList.get(position).getPath());
-                createDataParsed.fullSongList(songsList, position);
+                if (!finalSearchedList) {
+                    createDataParsed.onDataPass(songsList.get(position).getTitle(), songsList.get(position).getPath());
+                    createDataParsed.fullSongList(songsList, position);
+                } else {
+                    createDataParsed.onDataPass(newList.get(position).getTitle(), newList.get(position).getPath());
+                    createDataParsed.fullSongList(songsList, position);
+                }
             }
         });
         listView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
@@ -109,6 +126,20 @@ public class FavSongFragment extends ListFragment {
         public void fullSongList(ArrayList<SongsList> songList, int position);
 
         public int getPosition();
+
+        public String queryText();
+    }
+
+    public SongAdapter onQueryTextChange() {
+        String text = createDataParsed.queryText();
+        for (SongsList songs : songsList) {
+            String title = songs.getTitle().toLowerCase();
+            if (title.contains(text)) {
+                newList.add(songs);
+            }
+        }
+        return new SongAdapter(getContext(), newList);
+
     }
 
     private void showDialog(final String index, final int position) {

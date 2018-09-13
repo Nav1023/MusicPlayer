@@ -16,6 +16,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.Toast;
 
@@ -32,6 +33,7 @@ public class AllSongFragment extends ListFragment {
     private static int currentPos;
 
     public ArrayList<SongsList> songsList;
+    public ArrayList<SongsList> newList;
 
     private ListView listView;
 
@@ -75,17 +77,33 @@ public class AllSongFragment extends ListFragment {
      * Setting the content in the listView and sending the data to the Activity
      */
     public void setContent() {
+        boolean searchedList = false;
         songsList = new ArrayList<>();
+        newList = new ArrayList<>();
         getMusic();
         SongAdapter adapter = new SongAdapter(getContext(), songsList);
+        if (!createDataParse.queryText().equals("")) {
+            adapter = onQueryTextChange();
+            adapter.notifyDataSetChanged();
+            searchedList = true;
+        } else {
+            searchedList = false;
+        }
+
         listView.setAdapter(adapter);
 
+        final boolean finalSearchedList = searchedList;
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 // Toast.makeText(getContext(), "You clicked :\n" + songsList.get(position), Toast.LENGTH_SHORT).show();
-                createDataParse.onDataPass(songsList.get(position).getTitle(), songsList.get(position).getPath());
-                createDataParse.fullSongList(songsList, position);
+                if (!finalSearchedList) {
+                    createDataParse.onDataPass(songsList.get(position).getTitle(), songsList.get(position).getPath());
+                    createDataParse.fullSongList(songsList, position);
+                } else {
+                    createDataParse.onDataPass(newList.get(position).getTitle(),newList.get(position).getPath());
+                    createDataParse.fullSongList(songsList,position);
+                }
             }
         });
 
@@ -113,10 +131,24 @@ public class AllSongFragment extends ListFragment {
         }
     }
 
+    public SongAdapter onQueryTextChange() {
+        String text = createDataParse.queryText();
+        for (SongsList songs : songsList) {
+            String title = songs.getTitle().toLowerCase();
+            if (title.contains(text)) {
+                newList.add(songs);
+            }
+        }
+        return new SongAdapter(getContext(), newList);
+
+    }
+
     public interface createDataParse {
         public void onDataPass(String name, String path);
 
         public void fullSongList(ArrayList<SongsList> songList, int position);
+
+        public String queryText();
     }
 
 }

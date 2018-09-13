@@ -8,6 +8,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.Filterable;
 import android.widget.TextView;
 
 import com.example.soc_macmini_15.musicplayer.Model.SongsList;
@@ -16,7 +17,7 @@ import com.example.soc_macmini_15.musicplayer.R;
 import java.util.ArrayList;
 import java.util.List;
 
-public class SongAdapter extends ArrayAdapter<SongsList> {
+public class SongAdapter extends ArrayAdapter<SongsList> implements Filterable{
 
     private Context mContext;
     private ArrayList<SongsList> songList = new ArrayList<>();

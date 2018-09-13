@@ -1,6 +1,8 @@
 package com.example.soc_macmini_15.musicplayer.Activity;
 
 import android.Manifest;
+import android.app.SearchManager;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.pm.PackageManager;
 import android.media.MediaPlayer;
@@ -25,6 +27,7 @@ import android.view.MenuItem;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.ImageButton;
+import android.widget.SearchView;
 import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -52,6 +55,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     private ArrayList<SongsList> songList;
     private int currentPosition;
+    private String searchText="";
 
     private boolean checkFlag = false, repeatFlag = false, playContinueFlag = false, favFlag = true;
     private final int MY_PERMISSION_REQUEST = 100;
@@ -239,11 +243,30 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     public boolean onCreateOptionsMenu(Menu menu) {
         this.menu = menu;
         getMenuInflater().inflate(R.menu.action_bar_menu, menu);
+        SearchManager manager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
+        SearchView searchView = (SearchView) menu.findItem(R.id.menu_search).getActionView();
+        searchView.setSearchableInfo(manager.getSearchableInfo(getComponentName()));
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                searchText=newText;
+                queryText();
+                setPagerLayout();
+                return true;
+            }
+        });
+
         return super.onCreateOptionsMenu(menu);
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
+
         switch (item.getItemId()) {
             case android.R.id.home:
                 mDrawerLayout.openDrawer(Gravity.START);
@@ -488,6 +511,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         this.songList = songList;
         this.currentPosition = position;
 
+    }
+
+    @Override
+    public String queryText() {
+        return searchText.toLowerCase();
     }
 
     @Override

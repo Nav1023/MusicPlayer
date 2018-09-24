@@ -523,6 +523,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         this.songList = songList;
         this.currentPosition = position;
         this.playlistFlag = songList.size() == allSongLength;
+        this.playContinueFlag = !playlistFlag;
     }
 
     @Override

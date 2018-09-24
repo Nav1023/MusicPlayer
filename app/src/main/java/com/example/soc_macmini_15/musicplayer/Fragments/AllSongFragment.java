@@ -3,6 +3,7 @@ package com.example.soc_macmini_15.musicplayer.Fragments;
 
 import android.content.ContentResolver;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.database.Cursor;
 import android.graphics.Color;
 import android.net.Uri;
@@ -12,6 +13,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.ListFragment;
+import android.support.v7.app.AlertDialog;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -30,7 +32,6 @@ public class AllSongFragment extends ListFragment {
 
 
     private static ContentResolver contentResolver1;
-    private static int currentPos;
 
     public ArrayList<SongsList> songsList;
     public ArrayList<SongsList> newList;
@@ -89,7 +90,7 @@ public class AllSongFragment extends ListFragment {
         } else {
             searchedList = false;
         }
-
+        createDataParse.getLength(songsList.size());
         listView.setAdapter(adapter);
 
         final boolean finalSearchedList = searchedList;
@@ -101,8 +102,8 @@ public class AllSongFragment extends ListFragment {
                     createDataParse.onDataPass(songsList.get(position).getTitle(), songsList.get(position).getPath());
                     createDataParse.fullSongList(songsList, position);
                 } else {
-                    createDataParse.onDataPass(newList.get(position).getTitle(),newList.get(position).getPath());
-                    createDataParse.fullSongList(songsList,position);
+                    createDataParse.onDataPass(newList.get(position).getTitle(), newList.get(position).getPath());
+                    createDataParse.fullSongList(songsList, position);
                 }
             }
         });
@@ -110,6 +111,7 @@ public class AllSongFragment extends ListFragment {
         listView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
             @Override
             public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+                showDialog(position);
                 return true;
             }
         });
@@ -143,12 +145,36 @@ public class AllSongFragment extends ListFragment {
 
     }
 
+    private void showDialog(final int position) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+        builder.setMessage(getString(R.string.play_next))
+                .setCancelable(true)
+                .setNegativeButton(R.string.no, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+
+                    }
+                })
+                .setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        createDataParse.currentSong(songsList.get(position));
+                        setContent();
+                    }
+                });
+        AlertDialog alertDialog = builder.create();
+        alertDialog.show();
+    }
+
     public interface createDataParse {
         public void onDataPass(String name, String path);
 
         public void fullSongList(ArrayList<SongsList> songList, int position);
 
         public String queryText();
+
+        public void currentSong(SongsList songsList);
+        public void getLength(int length);
     }
 
 }

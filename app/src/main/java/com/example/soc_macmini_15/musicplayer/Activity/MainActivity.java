@@ -35,13 +35,14 @@ import android.widget.Toast;
 import com.example.soc_macmini_15.musicplayer.Adapter.ViewPagerAdapter;
 import com.example.soc_macmini_15.musicplayer.DB.FavoritesOperations;
 import com.example.soc_macmini_15.musicplayer.Fragments.AllSongFragment;
+import com.example.soc_macmini_15.musicplayer.Fragments.CurrentSongFragment;
 import com.example.soc_macmini_15.musicplayer.Fragments.FavSongFragment;
 import com.example.soc_macmini_15.musicplayer.Model.SongsList;
 import com.example.soc_macmini_15.musicplayer.R;
 
 import java.util.ArrayList;
 
-public class MainActivity extends AppCompatActivity implements View.OnClickListener, AllSongFragment.createDataParse, FavSongFragment.createDataParsed {
+public class MainActivity extends AppCompatActivity implements View.OnClickListener, AllSongFragment.createDataParse, FavSongFragment.createDataParsed, CurrentSongFragment.createDataParsed {
 
     private Menu menu;
 
@@ -55,10 +56,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     private ArrayList<SongsList> songList;
     private int currentPosition;
-    private String searchText="";
+    private String searchText = "";
+    private SongsList currSong;
 
-    private boolean checkFlag = false, repeatFlag = false, playContinueFlag = false, favFlag = true;
+    private boolean checkFlag = false, repeatFlag = false, playContinueFlag = false, favFlag = true, playlistFlag = false;
     private final int MY_PERMISSION_REQUEST = 100;
+    private int allSongLength;
 
     MediaPlayer mediaPlayer;
     Handler handler;
@@ -254,7 +257,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
             @Override
             public boolean onQueryTextChange(String newText) {
-                searchText=newText;
+                searchText = newText;
                 queryText();
                 setPagerLayout();
                 return true;
@@ -453,17 +456,21 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
      * Function to play the song using a thread
      */
     private void playCycle() {
-        seekbarController.setProgress(mediaPlayer.getCurrentPosition());
-        tvCurrentTime.setText(getTimeFormatted(mediaPlayer.getCurrentPosition()));
-        if (mediaPlayer.isPlaying()) {
-            runnable = new Runnable() {
-                @Override
-                public void run() {
-                    playCycle();
+        try {
+            seekbarController.setProgress(mediaPlayer.getCurrentPosition());
+            tvCurrentTime.setText(getTimeFormatted(mediaPlayer.getCurrentPosition()));
+            if (mediaPlayer.isPlaying()) {
+                runnable = new Runnable() {
+                    @Override
+                    public void run() {
+                        playCycle();
 
-                }
-            };
-            handler.postDelayed(runnable, 100);
+                    }
+                };
+                handler.postDelayed(runnable, 100);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 
@@ -507,15 +514,36 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     @Override
+    public void getLength(int length) {
+        this.allSongLength = length;
+    }
+
+    @Override
     public void fullSongList(ArrayList<SongsList> songList, int position) {
         this.songList = songList;
         this.currentPosition = position;
-
+        this.playlistFlag = songList.size() == allSongLength;
     }
 
     @Override
     public String queryText() {
         return searchText.toLowerCase();
+    }
+
+    @Override
+    public SongsList getSong() {
+        currentPosition = -1;
+        return currSong;
+    }
+
+    @Override
+    public boolean getPlaylistFlag() {
+        return playlistFlag;
+    }
+
+    @Override
+    public void currentSong(SongsList songsList) {
+        this.currSong = songsList;
     }
 
     @Override

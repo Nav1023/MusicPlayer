@@ -19,4 +19,5 @@
     <string name="yes">Yes</string>
     <string name="delete">Delete</string>
     <string name="delete_text"> Are you sure you want to delete</string>
+    <string name="play_next">Play Next</string>
 </resources>

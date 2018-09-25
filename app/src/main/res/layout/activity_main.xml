@@ -58,17 +58,17 @@
             app:layout_behavior="@string/appbar_scrolling_view_behavior" />
 
         <android.support.design.widget.FloatingActionButton
-            app:layout_anchor="@id/songs_viewpager"
             android:id="@+id/btn_refresh"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
             android:layout_alignParentEnd="true"
-            android:layout_marginBottom="10dp"
+            android:layout_marginBottom="15dp"
             android:layout_marginEnd="15dp"
+            android:focusable="true"
             android:src="@drawable/refresh_icon"
             app:backgroundTint="@color/colorPrimary"
-            android:focusable="true" />
+            app:layout_anchor="@id/songs_viewpager" />
 
     </RelativeLayout>
 
